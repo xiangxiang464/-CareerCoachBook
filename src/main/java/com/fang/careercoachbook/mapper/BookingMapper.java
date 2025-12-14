@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -22,8 +23,8 @@ public interface BookingMapper {
     List<Booking> getByUserId(String userId);
 
     // 根据 Cal.com 的 UID 更新状态（处理 Webhook 取消事件）
-    @Update("UPDATE bookings SET status = #{status} WHERE booking_uid = #{bookingUid}")
-    void updateStatus(String bookingUid, BookingStatus status);
+    @Update("UPDATE bookings SET status = #{status}, update_time = #{updateTime} WHERE booking_uid = #{bookingUid}")
+    void updateStatus(String bookingUid, BookingStatus status, LocalDateTime updateTime); // 新增参数
 
     // 根据 UID 查询单个预约
     @Select("SELECT * FROM bookings WHERE booking_uid = #{bookingUid}")

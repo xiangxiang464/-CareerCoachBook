@@ -139,7 +139,9 @@ public class BookingServiceImpl implements BookingService {
         } else if (CalWebhooks.EVENT_BOOKING_CANCELLED.equals(triggerEvent)) {
             String bookingUid = payload.path("uid").asText();
             // 更新时也要用枚举
-            bookingMapper.updateStatus(bookingUid, BookingStatus.BOOKING_CANCELLED);
+            bookingMapper.updateStatus(bookingUid,
+                    BookingStatus.BOOKING_CANCELLED,
+                    LocalDateTime.now(ZoneOffset.UTC));
         }
     }
 
