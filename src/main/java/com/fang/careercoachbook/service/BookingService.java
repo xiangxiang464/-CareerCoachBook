@@ -8,5 +8,6 @@ import java.util.List;
 public interface BookingService {
     String generateBookingUrl(String userId);
     List<BookingsVO> getMyBookings(String userId);
+    String getCancelUrl(String bookingUid);
     void processWebhook(JsonNode payload);
 }

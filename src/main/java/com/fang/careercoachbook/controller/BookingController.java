@@ -40,6 +40,16 @@ public class BookingController {
         return Result.success(list);
     }
 
+    /**
+     * 取消预约 (获取取消链接)
+     * 前端传过来的是 json: { "bookingUid": "xxx" }
+     */
+    @PostMapping("/bookings/cancel")
+    public Result<String> cancelBooking(@RequestBody Map<String, String> params) {
+        String bookingUid = params.get("bookingUid");
+        String cancelUrl = bookingService.getCancelUrl(bookingUid);
+        return Result.success(cancelUrl);
+    }
 
     /**
      * Webhook 回调

@@ -49,6 +49,25 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    public String getCancelUrl(String bookingUid) {
+        Booking booking = bookingMapper.getByUid(bookingUid);
+        if (booking == null) {
+            throw new BusinessException("预约不存在");
+        }
+        // 2. 校验状态：只有 "BOOKING_CREATED" 的才能取消
+        // 如果已经是 PENDING, CANCELLED, ENDED，都不允许再次获取取消链接
+        if (booking.getStatus() != BookingStatus.BOOKING_CREATED) {
+            throw new BusinessException("当前状态不可取消");
+        }
+        // 3. 校验时间：如果课程已经开始（或结束），则不能取消
+        // LocalDateTime.now() 获取服务器当前时间
+        if (booking.getStartTime().isBefore(LocalDateTime.now(ZoneOffset.UTC))) {
+            throw new BusinessException("课程已开始，无法取消");
+        }
+        return CANCEL_URL+bookingUid;
+    }
+
+    @Override
     @Transactional
     public void processWebhook(JsonNode jsonNode) {
         String triggerEvent = jsonNode.path("triggerEvent").asText();
