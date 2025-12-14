@@ -5,15 +5,18 @@ import com.fang.careercoachbook.entity.BookingStatus;
 import com.fang.careercoachbook.mapper.BookingMapper;
 import com.fang.careercoachbook.service.BookingService;
 import com.fang.careercoachbook.entity.Booking;
+import com.fang.careercoachbook.vo.BookingsVO;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -28,6 +31,21 @@ public class BookingServiceImpl implements BookingService {
     public String generateBookingUrl(String userId) {
         // 把 userId 藏在 metadata 里传给 Cal.com，这样webhook能获取到userId
         return CAL_BASE_URL + "&metadata[userId]=" + userId;
+    }
+
+    @Override
+    public List<BookingsVO> getMyBookings(String userId) {
+        List<Booking> bookingList = bookingMapper.getByUserId(userId);
+        // 2. 创建一个空的 VO 列表，用来装转换后的数据
+        List<BookingsVO> resultList = new ArrayList<>();
+
+        // 3. 使用传统的 for 循环遍历
+        for (Booking entity : bookingList) {
+            BookingsVO vo = new BookingsVO();
+            BeanUtils.copyProperties(entity, vo);
+            resultList.add(vo);
+        }
+        return resultList;
     }
 
     @Override

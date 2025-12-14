@@ -17,10 +17,15 @@ public interface BookingMapper {
             "VALUES (#{userId}, #{bookingUid}, #{coachName}, #{coachEmail}, #{userName}, #{userEmail}, #{meetingUrl}, #{startTime}, #{endTime}, #{status}, #{createTime}, #{updateTime})")
     void insert(Booking booking);
 
+    // 根据用户ID查询列表
+    @Select("SELECT * FROM bookings WHERE user_id = #{userId} ORDER BY create_time DESC")
+    List<Booking> getByUserId(String userId);
 
     // 根据 Cal.com 的 UID 更新状态（处理 Webhook 取消事件）
     @Update("UPDATE bookings SET status = #{status} WHERE booking_uid = #{bookingUid}")
     void updateStatus(String bookingUid, BookingStatus status);
 
-
+    // 根据 UID 查询单个预约
+    @Select("SELECT * FROM bookings WHERE booking_uid = #{bookingUid}")
+    Booking getByUid(String bookingUid);
 }

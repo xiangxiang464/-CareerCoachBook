@@ -4,6 +4,7 @@ package com.fang.careercoachbook.controller;
 import com.fang.careercoachbook.common.Result;
 import com.fang.careercoachbook.entity.Booking;
 import com.fang.careercoachbook.service.BookingService;
+import com.fang.careercoachbook.vo.BookingsVO;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,16 @@ public class BookingController {
         String url = bookingService.generateBookingUrl(userId);
         return Result.success(url);
     }
+
+    /**
+     *  我的预约列表
+     */
+    @GetMapping("/bookings")
+    public Result<List<BookingsVO>> getMyBookings(@RequestParam String userId) {
+        List<BookingsVO> list = bookingService.getMyBookings(userId);
+        return Result.success(list);
+    }
+
 
     /**
      * Webhook 回调
